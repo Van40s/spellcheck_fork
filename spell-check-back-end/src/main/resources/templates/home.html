@@ -141,7 +141,7 @@
                 formData.append('images', file);
             });
 
-            fetch('http://localhost:8080/images/upload', {
+            fetch('https://gramma-check-acdecyhvhtewd2by.westeurope-01.azurewebsites.net/images/upload', {
                 method: 'POST',
                 body: formData,
             })
