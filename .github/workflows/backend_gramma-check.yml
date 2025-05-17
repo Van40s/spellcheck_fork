@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read # This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -26,12 +26,13 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        working-directory: spell-check-back-end
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: 'spell-check-back-end/target/*.jar'
 
   deploy:
     runs-on: windows-latest
@@ -40,21 +41,21 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write # This is required for requesting the JWT
+      contents: read  # This is required for actions/checkout
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_559102588FBE4EEC9872D9E305BB7D7B }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_33CE51DFEC2E4C7A9E7A5704AE6DD208 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_539D807DB0AA49049CB6CE11FC879834 }}
+          client-id: ${{ secrets.__clientidsecretname__ }}
+          tenant-id: ${{ secrets.__tenantidsecretname__ }}
+          subscription-id: ${{ secrets.__subscriptionidsecretname__ }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -63,4 +64,3 @@ jobs:
           app-name: 'gramma-check'
           slot-name: 'Production'
           package: '*.jar'
-          
